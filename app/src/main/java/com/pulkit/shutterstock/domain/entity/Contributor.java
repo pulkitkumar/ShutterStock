@@ -1,6 +1,6 @@
-package com.pulkit.shutterstock.domain.model;
+package com.pulkit.shutterstock.domain.entity;
 
-class Contributor {
+public class Contributor {
 
   private final String id;
 

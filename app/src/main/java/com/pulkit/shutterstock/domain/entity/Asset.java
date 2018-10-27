@@ -1,6 +1,6 @@
-package com.pulkit.shutterstock.domain.model;
+package com.pulkit.shutterstock.domain.entity;
 
-class Asset {
+public class Asset {
 
   private final int height;
   private final int width;

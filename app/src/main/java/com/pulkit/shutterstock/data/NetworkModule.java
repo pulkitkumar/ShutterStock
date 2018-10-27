@@ -23,6 +23,9 @@ import retrofit2.converter.gson.GsonConverterFactory;
 @Module
 public abstract class NetworkModule {
 
+  // considering a max size of 5MB disk cache.
+  private static final long CACHE_SIZE = 5 * 1024 * 1024;
+
   @Provides
   @Singleton
   static Gson gson() {
@@ -34,13 +37,12 @@ public abstract class NetworkModule {
   @Provides
   @Singleton
   static Cache cache(Application application) {
-    // considering a max size of 5MB disk cache.
-    return new Cache(application.getCacheDir(), 5 * 1024 * 1024);
+    return new Cache(application.getCacheDir(), CACHE_SIZE);
   }
 
   @Binds
   @Named("auth")
-  abstract Interceptor authIntercepter(AuthInterceptor authIntercepter);
+  abstract Interceptor authInterceptor(AuthInterceptor authInterceptor);
 
   @Provides
   @Singleton

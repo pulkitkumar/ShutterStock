@@ -1,7 +1,7 @@
 package com.pulkit.shutterstock.app.di.module;
 
 import com.pulkit.shutterstock.BuildConfig;
-import com.pulkit.shutterstock.presentation.SchedulerProvider;
+import com.pulkit.shutterstock.presentation.commons.SchedulerProvider;
 import com.pulkit.shutterstock.presentation.commons.DefaultSchedulerProvider;
 import dagger.Binds;
 import dagger.Module;

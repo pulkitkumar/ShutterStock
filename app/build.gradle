@@ -2,7 +2,7 @@ apply plugin: 'com.android.application'
 
 def clientId = "09dd9-ab99c-f4b15-9171e-bc279-8da58"
 def clientSecret = "eed2a-9fb07-a21bc-0bb06-d2a48-7ebfb"
-def baseUrl = "https://api.shutterstock.com/v2"
+def baseUrl = "https://api.shutterstock.com/v2/"
 
 android {
     compileOptions {
@@ -21,7 +21,7 @@ android {
 
         buildConfigField "String", "CLIENT_ID", "\"${clientId}\""
         buildConfigField "String", "CLIENT_SECRET", "\"${clientSecret}\""
-        buildConfigField "String", "BASE_URL", "\"${clientSecret}\""
+        buildConfigField "String", "BASE_URL", "\"${baseUrl}\""
     }
     buildTypes {
         release {
@@ -43,8 +43,11 @@ dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
     //noinspection GradleCompatible
     implementation "com.android.support:appcompat-v7:$supportLibVersion"
+    implementation "com.android.support:design:$supportLibVersion"
 
     implementation 'android.arch.lifecycle:extensions:1.1.1'
+    implementation "android.arch.paging:runtime:1.0.0"
+
 
     implementation "io.reactivex.rxjava2:rxandroid:$rxAndroidVersion"
     implementation "io.reactivex.rxjava2:rxjava:$rxJavaVersion"

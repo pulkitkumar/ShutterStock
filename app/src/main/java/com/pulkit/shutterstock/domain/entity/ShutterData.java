@@ -1,30 +1,22 @@
-package com.pulkit.shutterstock.domain.model;
+package com.pulkit.shutterstock.domain.entity;
 
 import java.util.Objects;
 
-class ShutterData {
+public class ShutterData {
 
   private final String id;
   private final double aspect;
-  private final Asset preview;
-  private final Asset smallThumb;
-  private final Asset largeThumb;
-  private final Asset hugeThumb;
+  private final Assets assets;
   private final Contributor contributor;
   private final String description;
   private final String imageType;
   private final String mediaType;
 
-
-  public ShutterData(String id, double aspect, Asset preview,
-      Asset smallThumb, Asset largeThumb, Asset hugeThumb,
+  public ShutterData(String id, double aspect, Assets assets,
       Contributor contributor, String description, String imageType, String mediaType) {
     this.id = id;
     this.aspect = aspect;
-    this.preview = preview;
-    this.smallThumb = smallThumb;
-    this.largeThumb = largeThumb;
-    this.hugeThumb = hugeThumb;
+    this.assets = assets;
     this.contributor = contributor;
     this.description = description;
     this.imageType = imageType;
@@ -39,20 +31,8 @@ class ShutterData {
     return aspect;
   }
 
-  public Asset getPreview() {
-    return preview;
-  }
-
-  public Asset getSmallThumb() {
-    return smallThumb;
-  }
-
-  public Asset getLargeThumb() {
-    return largeThumb;
-  }
-
-  public Asset getHugeThumb() {
-    return hugeThumb;
+  public Assets getAssets() {
+    return assets;
   }
 
   public Contributor getContributor() {

@@ -1,4 +1,4 @@
-package com.pulkit.shutterstock.domain.model;
+package com.pulkit.shutterstock.domain.entity;
 
 import java.util.List;
 import java.util.Objects;

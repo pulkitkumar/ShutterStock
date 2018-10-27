@@ -1,6 +1,8 @@
 package com.pulkit.shutterstock.presentation.commons;
 
-import com.pulkit.shutterstock.presentation.SchedulerProvider;
+import io.reactivex.Scheduler;
+import io.reactivex.android.schedulers.AndroidSchedulers;
+import io.reactivex.schedulers.Schedulers;
 import javax.inject.Inject;
 
 public class DefaultSchedulerProvider implements SchedulerProvider {
@@ -10,4 +12,18 @@ public class DefaultSchedulerProvider implements SchedulerProvider {
 
   }
 
+  @Override
+  public Scheduler getBgPool() {
+    return Schedulers.io();
+  }
+
+  @Override
+  public Scheduler mainThread() {
+    return AndroidSchedulers.mainThread();
+  }
+
+  @Override
+  public Scheduler getAppPool() {
+    return Schedulers.computation();
+  }
 }

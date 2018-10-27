@@ -12,7 +12,7 @@ public abstract class ActivityBindingModule {
 
   @ActivityScope
   @ContributesAndroidInjector(modules = ImageSearchModule.class)
-  abstract ImageSearchActivity mainActivityInjector();
+  abstract ImageSearchActivity searchActivityInjector();
 
 }
 

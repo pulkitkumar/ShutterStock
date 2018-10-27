@@ -1,3 +1,4 @@
 <resources>
   <string name="app_name">ShutterStock</string>
+  <string name="filterHint">Search Here</string>
 </resources>
