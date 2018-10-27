@@ -1,0 +1,69 @@
+apply plugin: 'com.android.application'
+
+def clientId = "09dd9-ab99c-f4b15-9171e-bc279-8da58"
+def clientSecret = "eed2a-9fb07-a21bc-0bb06-d2a48-7ebfb"
+def baseUrl = "https://api.shutterstock.com/v2"
+
+android {
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
+    }
+
+    compileSdkVersion 28
+    defaultConfig {
+        applicationId "com.pulkit.shutterstock"
+        minSdkVersion 19
+        targetSdkVersion 28
+        versionCode 1
+        versionName "1.0"
+        testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
+
+        buildConfigField "String", "CLIENT_ID", "\"${clientId}\""
+        buildConfigField "String", "CLIENT_SECRET", "\"${clientSecret}\""
+        buildConfigField "String", "BASE_URL", "\"${clientSecret}\""
+    }
+    buildTypes {
+        release {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+        }
+    }
+}
+
+dependencies {
+    def daggerVersion = "2.17"
+    def supportLibVersion = "28.0.0"
+    def rxJavaVersion = "2.2.3"
+    def rxAndroidVersion = "2.1.0"
+    def retrofitVersion = "2.4.0"
+    def gsonVersion = "2.8.5"
+    def picassoVersion = "2.71828"
+
+    implementation fileTree(dir: 'libs', include: ['*.jar'])
+    //noinspection GradleCompatible
+    implementation "com.android.support:appcompat-v7:$supportLibVersion"
+
+    implementation 'android.arch.lifecycle:extensions:1.1.1'
+
+    implementation "io.reactivex.rxjava2:rxandroid:$rxAndroidVersion"
+    implementation "io.reactivex.rxjava2:rxjava:$rxJavaVersion"
+
+    implementation "com.google.code.gson:gson:$gsonVersion"
+    implementation "com.squareup.retrofit2:retrofit:$retrofitVersion"
+    implementation "com.squareup.retrofit2:converter-gson:$retrofitVersion"
+    implementation "com.squareup.retrofit2:adapter-rxjava2:$retrofitVersion"
+    implementation 'com.squareup.okhttp3:logging-interceptor:3.9.1'
+
+
+    implementation "com.squareup.picasso:picasso:$picassoVersion"
+
+    implementation "com.google.dagger:dagger-android:$daggerVersion"
+    implementation "com.google.dagger:dagger-android-support:$daggerVersion"
+    annotationProcessor "com.google.dagger:dagger-compiler:$daggerVersion"
+    annotationProcessor "com.google.dagger:dagger-android-processor:$daggerVersion"
+
+    testImplementation "junit:junit:4.12"
+    androidTestImplementation "com.android.support.test:runner:1.0.2"
+    androidTestImplementation "com.android.support.test.espresso:espresso-core:3.0.2"
+}
