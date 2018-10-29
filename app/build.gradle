@@ -39,15 +39,15 @@ dependencies {
     def retrofitVersion = "2.4.0"
     def gsonVersion = "2.8.5"
     def picassoVersion = "2.71828"
+    def androidArchVersion = "1.1.1"
+    def mockitoVersion = "2.13.0"
 
     implementation fileTree(dir: 'libs', include: ['*.jar'])
     //noinspection GradleCompatible
     implementation "com.android.support:appcompat-v7:$supportLibVersion"
     implementation "com.android.support:design:$supportLibVersion"
 
-    implementation 'android.arch.lifecycle:extensions:1.1.1'
-    implementation "android.arch.paging:runtime:1.0.0"
-
+    implementation "android.arch.lifecycle:extensions:$androidArchVersion"
 
     implementation "io.reactivex.rxjava2:rxandroid:$rxAndroidVersion"
     implementation "io.reactivex.rxjava2:rxjava:$rxJavaVersion"
@@ -67,6 +67,12 @@ dependencies {
     annotationProcessor "com.google.dagger:dagger-android-processor:$daggerVersion"
 
     testImplementation "junit:junit:4.12"
+    testImplementation "org.mockito:mockito-core:$mockitoVersion"
+    testImplementation "android.arch.core:core-testing:$androidArchVersion"
+    testImplementation "com.google.dagger:dagger-android:$daggerVersion"
+    testAnnotationProcessor "com.google.dagger:dagger-compiler:$daggerVersion"
+    testAnnotationProcessor "com.google.dagger:dagger-android-processor:$daggerVersion"
+
     androidTestImplementation "com.android.support.test:runner:1.0.2"
     androidTestImplementation "com.android.support.test.espresso:espresso-core:3.0.2"
 }

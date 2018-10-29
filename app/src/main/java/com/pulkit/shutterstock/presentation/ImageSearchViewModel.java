@@ -5,6 +5,7 @@ import android.arch.lifecycle.ViewModel;
 import android.arch.lifecycle.ViewModelProvider;
 import android.support.annotation.MainThread;
 import android.support.annotation.NonNull;
+import com.pulkit.shutterstock.app.di.scope.ActivityScope;
 import com.pulkit.shutterstock.domain.ShutterSearcher;
 import com.pulkit.shutterstock.domain.entity.ShutterPage;
 import com.pulkit.shutterstock.presentation.commons.FooterState;
@@ -109,6 +110,7 @@ public class ImageSearchViewModel extends ViewModel {
     }
   }
 
+  @ActivityScope
   public static class Factory implements ViewModelProvider.Factory {
 
     private final ShutterSearcher searcher;
@@ -126,7 +128,7 @@ public class ImageSearchViewModel extends ViewModel {
       if (modelClass.isAssignableFrom(ImageSearchViewModel.class)) {
         return (T) new ImageSearchViewModel(searcher, provider);
       } else {
-        throw new RuntimeException("Can not provide view model for "+modelClass.getName());
+        throw new IllegalStateException("Can not provide view model for "+modelClass.getName());
       }
     }
   }

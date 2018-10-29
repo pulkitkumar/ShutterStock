@@ -8,9 +8,7 @@ import javax.inject.Inject;
 public class DefaultSchedulerProvider implements SchedulerProvider {
 
   @Inject
-  public DefaultSchedulerProvider () {
-
-  }
+  public DefaultSchedulerProvider () { }
 
   @Override
   public Scheduler getBgPool() {

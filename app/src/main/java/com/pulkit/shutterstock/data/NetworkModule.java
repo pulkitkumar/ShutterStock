@@ -41,6 +41,7 @@ public abstract class NetworkModule {
   }
 
   @Binds
+  @Singleton
   @Named("auth")
   abstract Interceptor authInterceptor(AuthInterceptor authInterceptor);
 

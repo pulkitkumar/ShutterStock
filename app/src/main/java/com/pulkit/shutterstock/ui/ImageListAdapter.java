@@ -6,7 +6,9 @@ import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.RecyclerView.ViewHolder;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.View.OnClickListener;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.ImageView;
 import com.pulkit.shutterstock.R;
 import com.pulkit.shutterstock.app.AppMemoryState;
@@ -21,18 +23,25 @@ import javax.inject.Inject;
 
 public class ImageListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
+  public static final int LOADING_ELEMENT_COUNT = 1;
+
   private static final int TYPE_IMAGE = 101;
   private static final int TYPE_ERROR = 102;
   private static final int TYPE_LOADING = 103;
   private final List<Image> images;
   private final AppMemoryState appMemory;
   private FooterState footer;
+  private OnClickListener retryListener;
 
   @Inject
   public ImageListAdapter(AppMemoryState appMemory) {
     this.appMemory = appMemory;
     images = new ArrayList<>();
     footer = FooterState.NONE;
+  }
+
+  void setRetryClickListener(OnClickListener listener) {
+    this.retryListener = listener;
   }
 
   public void updateList(List<Image> newList) {
@@ -57,16 +66,24 @@ public class ImageListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
   public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
     if (viewType == TYPE_IMAGE) {
       View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_image, parent, false);
-      return new ImageViewHolder(appMemory, view);
+      return new ImageVH(appMemory, view);
+    } else if (viewType == TYPE_LOADING){
+      View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.footer_progress, parent, false);
+      return new ProgressFooterVH(view);
+    } else if (viewType == TYPE_ERROR) {
+      View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.footer_error_with_retry, parent, false);
+      return new ErrorRetryFooterVH(view);
     } else {
-      return null;
+      throw new IllegalStateException("Unhandled type "+ viewType);
     }
   }
 
   @Override
   public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
     if (getItemViewType(position) == TYPE_IMAGE) {
-      ((ImageViewHolder)holder).bind(images.get(position));
+      ((ImageVH)holder).bind(images.get(position));
+    } else if (getItemViewType(position) == TYPE_ERROR) {
+      ((ErrorRetryFooterVH) holder).bind(retryListener);
     }
   }
 
@@ -89,17 +106,17 @@ public class ImageListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
       } else if (footer == FooterState.LOADING) {
         return TYPE_LOADING;
       } else {
-        throw new RuntimeException("Adapter size can't be bigger if footer is None");
+        throw new IllegalStateException("Adapter size can't be bigger if footer is None");
       }
     }
   }
 
-  public static class ImageViewHolder extends RecyclerView.ViewHolder {
+  public static class ImageVH extends RecyclerView.ViewHolder {
 
     private final ImageView imageView;
     private final AppMemoryState appMemoryState;
 
-    public ImageViewHolder(AppMemoryState appMemoryState, @NonNull View itemView) {
+    public ImageVH(AppMemoryState appMemoryState, @NonNull View itemView) {
       super(itemView);
       this.appMemoryState = appMemoryState;
       imageView = itemView.findViewById(R.id.image);
@@ -117,4 +134,31 @@ public class ImageListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
       requestCreator.into(imageView);
     }
   }
+
+  public static class ProgressFooterVH extends RecyclerView.ViewHolder {
+
+    public ProgressFooterVH(@NonNull View itemView) {
+      super(itemView);
+    }
+  }
+
+  public static class ErrorRetryFooterVH extends RecyclerView.ViewHolder {
+
+    private final Button retry;
+
+    public ErrorRetryFooterVH(@NonNull View itemView) {
+      super(itemView);
+      retry = itemView.findViewById(R.id.retry);
+    }
+
+    private void bind(OnClickListener listener) {
+      if (listener != null) {
+        retry.setVisibility(View.VISIBLE);
+        retry.setOnClickListener(listener);
+      } else {
+        retry.setVisibility(View.GONE);
+      }
+    }
+  }
+
 }

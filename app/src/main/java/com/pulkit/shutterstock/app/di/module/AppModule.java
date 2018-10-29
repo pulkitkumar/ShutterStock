@@ -13,6 +13,7 @@ import javax.inject.Singleton;
 public abstract class AppModule {
 
   @Binds
+  @Singleton
   abstract SchedulerProvider providerSchedulerProvider(DefaultSchedulerProvider provider);
 
   @Provides

@@ -11,7 +11,7 @@ import dagger.android.ContributesAndroidInjector;
 public abstract class ActivityBindingModule {
 
   @ActivityScope
-  @ContributesAndroidInjector(modules = ImageSearchModule.class)
+  @ContributesAndroidInjector(modules = {ImageSearchModule.class})
   abstract ImageSearchActivity searchActivityInjector();
 
 }

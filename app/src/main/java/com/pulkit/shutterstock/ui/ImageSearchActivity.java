@@ -1,14 +1,16 @@
 package com.pulkit.shutterstock.ui;
 
+import android.app.Activity;
 import android.arch.lifecycle.ViewModelProvider;
 import android.arch.lifecycle.ViewModelProviders;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.design.widget.Snackbar;
-import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.RecyclerView.LayoutManager;
 import android.support.v7.widget.SearchView;
 import android.view.View;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.ProgressBar;
 import com.pulkit.shutterstock.R;
 import com.pulkit.shutterstock.presentation.ImageSearchViewModel;
@@ -21,29 +23,30 @@ public class ImageSearchActivity extends DaggerAppCompatActivity {
   ViewModelProvider.Factory factory;
   @Inject
   ImageListAdapter adapter;
+  @Inject
+  LayoutManager layoutManager;
+  @Inject
+  OnScrollListenerWithCallback scrollListener;
+
   private ImageSearchViewModel viewModel;
 
   @Override
   protected void onCreate(@Nullable Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
     setContentView(R.layout.activity_search);
+
     viewModel = ViewModelProviders.of(this, factory).get(ImageSearchViewModel.class);
 
     final ProgressBar progressBar = findViewById(R.id.progressBar);
     final RecyclerView recyclerView = findViewById(R.id.recyclerView);
     final SearchView searchView = findViewById(R.id.searchView);
 
-    GridLayoutManager layoutManager = new GridLayoutManager(this, 2);
     recyclerView.setLayoutManager(layoutManager);
-    recyclerView.setAdapter(adapter);
-    EndlessScrollListener scrollListener = new EndlessScrollListener(layoutManager) {
-      @Override
-      public void onLoadMore() {
-        viewModel.loadNextPage();
-      }
-    };
-
     recyclerView.addOnScrollListener(scrollListener);
+    recyclerView.setAdapter(adapter);
+
+    scrollListener.setCallback(() -> viewModel.loadNextPage());
+    adapter.setRetryClickListener(__ -> viewModel.loadNextPage());
 
     viewModel.loadProgress.observe(this, progress -> {
       if (progress) {
@@ -63,6 +66,7 @@ public class ImageSearchActivity extends DaggerAppCompatActivity {
       public boolean onQueryTextSubmit(String s) {
         scrollListener.reset();
         viewModel.search(s);
+        closeSoftKeyboard(searchView);
         return true;
       }
 
@@ -71,5 +75,10 @@ public class ImageSearchActivity extends DaggerAppCompatActivity {
         return false;
       }
     });
+  }
+
+  public void closeSoftKeyboard(View view) {
+    InputMethodManager imm = (InputMethodManager) getSystemService(Activity.INPUT_METHOD_SERVICE);
+    imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
   }
 }
