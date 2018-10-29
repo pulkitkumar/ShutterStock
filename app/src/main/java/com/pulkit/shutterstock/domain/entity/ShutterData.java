@@ -1,7 +1,9 @@
 package com.pulkit.shutterstock.domain.entity;
 
 import java.util.Objects;
-
+/**
+ * Immutable data class to represent ShutterStock search data.
+ */
 public class ShutterData {
 
   private final String id;

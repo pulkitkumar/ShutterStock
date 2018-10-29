@@ -1,15 +1,16 @@
 package com.pulkit.shutterstock.domain;
 
+import dagger.Binds;
 import dagger.Module;
-import dagger.Provides;
 import javax.inject.Singleton;
 
+/**
+ * Provides dependencies from domain package to be used in App or User component.
+ */
 @Module
-public class DomainModule {
+public abstract class DomainModule {
 
-  @Provides
+  @Binds
   @Singleton
-  ShutterSearcher searcher(ShutterRepository repository) {
-    return new ShutterSearcher(repository);
-  }
+  abstract ShutterSearcher searcher(ShutterSearcherImpl shutterSearcher);
 }

@@ -16,9 +16,13 @@ import io.reactivex.Single;
 import io.reactivex.disposables.Disposable;
 import io.reactivex.processors.PublishProcessor;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import javax.inject.Inject;
 
+/**
+ * Any search image ui component should use this as view model.
+ */
 public class ImageSearchViewModel extends ViewModel {
 
   public static final int INITIAL_PAGE_NUMBER = 1;
@@ -34,7 +38,7 @@ public class ImageSearchViewModel extends ViewModel {
   private Disposable disposable;
 
   public final MutableLiveData<List<Image>> images = new MutableLiveData<>();
-  public final MutableLiveData<String> errorMessage = new OneTimeLiveData<>();
+  public final OneTimeLiveData<String> errorMessage = new OneTimeLiveData<>();
   public final MutableLiveData<Boolean> loadProgress = new MutableLiveData<>();
   public final MutableLiveData<FooterState> footerState = new MutableLiveData<>();
 
@@ -51,7 +55,7 @@ public class ImageSearchViewModel extends ViewModel {
     this.query = query;
     pageNumber = INITIAL_PAGE_NUMBER;
     uiImages.clear();
-    images.setValue(uiImages);
+    images.setValue(Collections.unmodifiableList(uiImages));
     hideProgress();
     paginator.onNext(true);
   }
@@ -65,20 +69,25 @@ public class ImageSearchViewModel extends ViewModel {
     return paginator
         .observeOn(schedulerProvider.getBgPool())
         .doOnNext(__ -> showProgress())
-        .switchMapSingle(__ -> searcher.search(query, pageNumber, PAGE_SIZE))
+        .switchMapSingle(__ -> searcher.search(query, pageNumber, PAGE_SIZE)
+            .onErrorReturn(e -> {
+              errorMessage.postValue(e.getMessage());
+              if (pageNumber > INITIAL_PAGE_NUMBER) {
+                footerState.postValue(FooterState.ERROR);
+              } else {
+                loadProgress.setValue(false);
+              }
+              return ShutterPage.emptyPage();
+            }))
         .observeOn(schedulerProvider.getAppPool())
         .switchMapSingle(this::mapToUiState)
         .observeOn(schedulerProvider.mainThread())
         .subscribe(imagesForPage -> {
-          hideProgress();
-          uiImages.addAll(imagesForPage);
-          images.setValue(uiImages);
-          pageNumber++;
-        }, throwable -> {
-          hideProgress();
-          errorMessage.setValue(throwable.getMessage());
-          if (pageNumber > INITIAL_PAGE_NUMBER) {
-            footerState.setValue(FooterState.ERROR);
+          if (imagesForPage.size() > 0) {
+            hideProgress();
+            pageNumber++;
+            uiImages.addAll(imagesForPage);
+            images.setValue(Collections.unmodifiableList(uiImages));
           }
         });
   }
@@ -94,6 +103,7 @@ public class ImageSearchViewModel extends ViewModel {
       loadProgress.postValue(true);
       footerState.postValue(FooterState.NONE);
     } else {
+      loadProgress.postValue(false);
       footerState.postValue(FooterState.LOADING);
     }
   }
@@ -128,7 +138,7 @@ public class ImageSearchViewModel extends ViewModel {
       if (modelClass.isAssignableFrom(ImageSearchViewModel.class)) {
         return (T) new ImageSearchViewModel(searcher, provider);
       } else {
-        throw new IllegalStateException("Can not provide view model for "+modelClass.getName());
+        throw new IllegalStateException("Can not provide view model for " + modelClass.getName());
       }
     }
   }

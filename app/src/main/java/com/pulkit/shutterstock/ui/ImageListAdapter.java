@@ -1,7 +1,12 @@
 package com.pulkit.shutterstock.ui;
 
+import static com.pulkit.shutterstock.presentation.Image.DIFF_CALLBACK;
+
 import android.support.annotation.NonNull;
-import android.support.v7.util.DiffUtil;
+import android.support.v7.recyclerview.extensions.AsyncDifferConfig;
+import android.support.v7.recyclerview.extensions.AsyncListDiffer;
+import android.support.v7.util.AdapterListUpdateCallback;
+import android.support.v7.widget.GridLayoutManager.SpanSizeLookup;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.RecyclerView.ViewHolder;
 import android.view.LayoutInflater;
@@ -11,53 +16,71 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageView;
 import com.pulkit.shutterstock.R;
-import com.pulkit.shutterstock.app.AppMemoryState;
+import com.pulkit.shutterstock.app.PicassoCacheStrategyWrapper;
 import com.pulkit.shutterstock.presentation.Image;
 import com.pulkit.shutterstock.presentation.commons.FooterState;
 import com.squareup.picasso.MemoryPolicy;
 import com.squareup.picasso.Picasso;
 import com.squareup.picasso.RequestCreator;
-import java.util.ArrayList;
 import java.util.List;
-import javax.inject.Inject;
 
+/**
+ * Recycler view adapter to show image list with a bottom state for loading
+ */
 public class ImageListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
-  public static final int LOADING_ELEMENT_COUNT = 1;
+  public static final int FOOTER_ELEMENT_COUNT = 1;
 
   private static final int TYPE_IMAGE = 101;
   private static final int TYPE_ERROR = 102;
   private static final int TYPE_LOADING = 103;
-  private final List<Image> images;
-  private final AppMemoryState appMemory;
+
+  public static SpanSizeLookup getSpanLookup(ImageListAdapter adapter) {
+    return new SpanSizeLookup() {
+      @Override
+      public int getSpanSize(int p) {
+        return adapter.getItemViewType(p) == TYPE_IMAGE ? 1 : 2;
+      }
+    };
+  }
+
+  private final PicassoCacheStrategyWrapper cacheStrategy;
+  private final AsyncListDiffer<Image> helper;
   private FooterState footer;
   private OnClickListener retryListener;
 
-  @Inject
-  public ImageListAdapter(AppMemoryState appMemory) {
-    this.appMemory = appMemory;
-    images = new ArrayList<>();
+  public ImageListAdapter(PicassoCacheStrategyWrapper cacheStrategy) {
+    this.cacheStrategy = cacheStrategy;
     footer = FooterState.NONE;
+    this.helper = new AsyncListDiffer(new AdapterListUpdateCallback(this),
+        new AsyncDifferConfig
+            .Builder(DIFF_CALLBACK)
+            .build());
   }
 
-  void setRetryClickListener(OnClickListener listener) {
+  public void setRetryClickListener(OnClickListener listener) {
     this.retryListener = listener;
   }
 
   public void updateList(List<Image> newList) {
-    DiffUtil.DiffResult diffResult = DiffUtil.calculateDiff(new ImageDiffUtilCallback(images, newList));
-    images.clear();
-    images.addAll(newList);
-    diffResult.dispatchUpdatesTo(this);
+    if (newList.size() > 0) {
+      helper.submitList(newList);
+    } else {
+      helper.submitList(null);
+    }
   }
 
-  void setFooter(FooterState f) {
+  public void setFooter(FooterState f) {
     FooterState old = footer;
     this.footer = f;
     if (old == FooterState.NONE && footer != FooterState.NONE) {
-      notifyItemInserted(images.size() +1);
-    } else if (old != FooterState.NONE && footer == FooterState.NONE){
-      notifyItemRemoved(images.size() +1);
+      notifyItemInserted(helper.getCurrentList().size() + FOOTER_ELEMENT_COUNT);
+    } else if (old != FooterState.NONE) {
+      if (footer == FooterState.NONE) {
+        notifyItemRemoved(helper.getCurrentList().size() + FOOTER_ELEMENT_COUNT);
+      } else {
+        notifyItemChanged(helper.getCurrentList().size() + FOOTER_ELEMENT_COUNT);
+      }
     }
   }
 
@@ -65,23 +88,26 @@ public class ImageListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
   @Override
   public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
     if (viewType == TYPE_IMAGE) {
-      View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_image, parent, false);
-      return new ImageVH(appMemory, view);
-    } else if (viewType == TYPE_LOADING){
-      View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.footer_progress, parent, false);
+      View view = LayoutInflater.from(parent.getContext())
+          .inflate(R.layout.item_image, parent, false);
+      return new ImageVH(cacheStrategy, view);
+    } else if (viewType == TYPE_LOADING) {
+      View view = LayoutInflater.from(parent.getContext())
+          .inflate(R.layout.footer_progress, parent, false);
       return new ProgressFooterVH(view);
     } else if (viewType == TYPE_ERROR) {
-      View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.footer_error_with_retry, parent, false);
+      View view = LayoutInflater.from(parent.getContext())
+          .inflate(R.layout.footer_error_with_retry, parent, false);
       return new ErrorRetryFooterVH(view);
     } else {
-      throw new IllegalStateException("Unhandled type "+ viewType);
+      throw new IllegalStateException("Unhandled type " + viewType);
     }
   }
 
   @Override
   public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
     if (getItemViewType(position) == TYPE_IMAGE) {
-      ((ImageVH)holder).bind(images.get(position));
+      ((ImageVH) holder).bind(helper.getCurrentList().get(position));
     } else if (getItemViewType(position) == TYPE_ERROR) {
       ((ErrorRetryFooterVH) holder).bind(retryListener);
     }
@@ -90,15 +116,15 @@ public class ImageListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
   @Override
   public int getItemCount() {
     if (footer == FooterState.NONE) {
-      return images.size();
+      return helper.getCurrentList().size();
     } else {
-      return images.size() + 1;
+      return helper.getCurrentList().size() + FOOTER_ELEMENT_COUNT;
     }
   }
 
   @Override
   public int getItemViewType(int position) {
-    if(position < images.size()) {
+    if (position < helper.getCurrentList().size()) {
       return TYPE_IMAGE;
     } else {
       if (footer == FooterState.ERROR) {
@@ -114,11 +140,11 @@ public class ImageListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
   public static class ImageVH extends RecyclerView.ViewHolder {
 
     private final ImageView imageView;
-    private final AppMemoryState appMemoryState;
+    private final PicassoCacheStrategyWrapper cacheStrategy;
 
-    public ImageVH(AppMemoryState appMemoryState, @NonNull View itemView) {
+    public ImageVH(PicassoCacheStrategyWrapper appMemoryState, @NonNull View itemView) {
       super(itemView);
-      this.appMemoryState = appMemoryState;
+      this.cacheStrategy = appMemoryState;
       imageView = itemView.findViewById(R.id.image);
     }
 
@@ -128,7 +154,7 @@ public class ImageListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
           .placeholder(R.drawable.ic_placeholder)
           .fit()
           .centerCrop();
-      if (appMemoryState.isLow()) {
+      if (cacheStrategy.isNoCacheStrategy()) {
         requestCreator.memoryPolicy(MemoryPolicy.NO_STORE);
       }
       requestCreator.into(imageView);
@@ -160,5 +186,4 @@ public class ImageListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
       }
     }
   }
-
 }

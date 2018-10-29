@@ -1,8 +1,12 @@
 package com.pulkit.shutterstock.domain.entity;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 
+/**
+ * Immutable data class to represent ShutterStock Search page.
+ */
 public class ShutterPage {
 
   private final int page;
@@ -18,6 +22,18 @@ public class ShutterPage {
     this.totalCount = totalCount;
     this.searchId = searchId;
     this.data = data;
+  }
+
+  private ShutterPage() {
+    page = 0;
+    perPage = 0;
+    totalCount = 0;
+    searchId = "";
+    data = Collections.emptyList();
+  }
+
+  public static ShutterPage emptyPage() {
+    return new ShutterPage();
   }
 
   public int getPage() {

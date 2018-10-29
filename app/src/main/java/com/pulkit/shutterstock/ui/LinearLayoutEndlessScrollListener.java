@@ -1,16 +1,18 @@
 package com.pulkit.shutterstock.ui;
 
-import static com.pulkit.shutterstock.ui.ImageListAdapter.LOADING_ELEMENT_COUNT;
-
 import android.support.annotation.NonNull;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import javax.inject.Inject;
 
+/**
+ * This gives a callback to when a recycler view using a linear layout manager reaches close to bottom.
+ */
 public class LinearLayoutEndlessScrollListener extends OnScrollListenerWithCallback {
 
   // two rows (of size 3) buffer items before callback.
   public static final int BUFFER_ITEMS = 6;
+  private static final int FOOTER_ELEMENT_COUNT = 1;
 
   private final LinearLayoutManager layoutManager;
   private boolean loading = true;
@@ -29,7 +31,7 @@ public class LinearLayoutEndlessScrollListener extends OnScrollListenerWithCallb
       int lastVisibleItemPosition = layoutManager.findLastVisibleItemPosition();
 
       // when new items are added set loading false and update item count.
-      if (loading && (totalItemCount > previousTotalItemCount + LOADING_ELEMENT_COUNT)) { // added 1 for loading element.
+      if (loading && (totalItemCount > previousTotalItemCount + FOOTER_ELEMENT_COUNT)) { // Not changed when showing progress.
         loading = false;
         previousTotalItemCount = totalItemCount;
       }

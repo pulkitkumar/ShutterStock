@@ -1,12 +1,14 @@
 package com.pulkit.shutterstock.app.di.module;
 
 import com.pulkit.shutterstock.BuildConfig;
-import com.pulkit.shutterstock.presentation.commons.SchedulerProvider;
+import com.pulkit.shutterstock.data.qualifiers.BaseUrl;
+import com.pulkit.shutterstock.data.qualifiers.Username;
+import com.pulkit.shutterstock.data.qualifiers.Password;
 import com.pulkit.shutterstock.presentation.commons.DefaultSchedulerProvider;
+import com.pulkit.shutterstock.presentation.commons.SchedulerProvider;
 import dagger.Binds;
 import dagger.Module;
 import dagger.Provides;
-import javax.inject.Named;
 import javax.inject.Singleton;
 
 @Module
@@ -18,21 +20,21 @@ public abstract class AppModule {
 
   @Provides
   @Singleton
-  @Named("baseUrl")
+  @BaseUrl
   static String baseUrl() {
     return BuildConfig.BASE_URL;
   }
 
   @Provides
   @Singleton
-  @Named("clientId")
+  @Username
   static String clientId() {
     return BuildConfig.CLIENT_ID;
   }
 
   @Provides
   @Singleton
-  @Named("clientSecret")
+  @Password
   static String clientSecret() {
     return BuildConfig.CLIENT_SECRET;
   }

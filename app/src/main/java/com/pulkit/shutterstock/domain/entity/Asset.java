@@ -1,5 +1,8 @@
 package com.pulkit.shutterstock.domain.entity;
 
+/**
+ * Immutable data class to represent ShutterStock Asset.
+ */
 public class Asset {
 
   private final int height;

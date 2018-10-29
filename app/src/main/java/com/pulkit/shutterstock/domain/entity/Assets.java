@@ -1,5 +1,8 @@
 package com.pulkit.shutterstock.domain.entity;
 
+/**
+ * Immutable data class to represent ShutterStock Assets.
+ */
 public class Assets {
 
   private final Asset preview;

@@ -17,7 +17,7 @@ public class ShutterApplication extends DaggerApplication {
   @Inject
   DispatchingAndroidInjector<Activity> activityInjector;
   @Inject
-  AppMemoryState appMemoryState;
+  PicassoCacheStrategyWrapper appMemoryState;
   @Inject
   SchedulerProvider schedulerProvider;
 
@@ -32,7 +32,7 @@ public class ShutterApplication extends DaggerApplication {
     super.onTrimMemory(level);
     if (level == TRIM_MEMORY_RUNNING_LOW || level == TRIM_MEMORY_RUNNING_CRITICAL ||
         level == TRIM_MEMORY_COMPLETE) {
-      appMemoryState.setLow();
+      appMemoryState.setNoCacheStrategy();
       Picasso old = Picasso.get();
       Picasso.setSingletonInstance(new Picasso.Builder(this)
           .memoryCache(new LruCache(1))

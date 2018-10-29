@@ -4,12 +4,14 @@ import android.app.Application;
 import com.google.gson.FieldNamingPolicy;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import com.pulkit.shutterstock.data.qualifiers.Auth;
+import com.pulkit.shutterstock.data.qualifiers.BaseUrl;
+import com.pulkit.shutterstock.data.qualifiers.Log;
 import com.pulkit.shutterstock.domain.ShutterRepository;
 import dagger.Binds;
 import dagger.Module;
 import dagger.Provides;
 import java.util.concurrent.TimeUnit;
-import javax.inject.Named;
 import javax.inject.Singleton;
 import okhttp3.Cache;
 import okhttp3.Interceptor;
@@ -20,10 +22,13 @@ import retrofit2.Retrofit;
 import retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory;
 import retrofit2.converter.gson.GsonConverterFactory;
 
+/**
+ * This class has all the network related dependencies.
+ */
 @Module
 public abstract class NetworkModule {
 
-  // considering a max size of 5MB disk cache.
+  // considering a max size of 5MB disk irrespective of device as the size is not too much.
   private static final long CACHE_SIZE = 5 * 1024 * 1024;
 
   @Provides
@@ -42,12 +47,12 @@ public abstract class NetworkModule {
 
   @Binds
   @Singleton
-  @Named("auth")
-  abstract Interceptor authInterceptor(AuthInterceptor authInterceptor);
+  @Auth
+  abstract Interceptor authInterceptor(BasicAuthInterceptor authInterceptor);
 
   @Provides
   @Singleton
-  @Named("log")
+  @Log
   static Interceptor loggingInterceptor() {
     HttpLoggingInterceptor loggingInterceptor = new HttpLoggingInterceptor();
     loggingInterceptor.setLevel(Level.BODY);
@@ -56,13 +61,13 @@ public abstract class NetworkModule {
 
   @Provides
   @Singleton
-  static OkHttpClient okHttpClient(boolean isDebug, @Named("auth") Interceptor authInterceptor,
-      @Named("log") Interceptor loggingInterceptor) {
+  static OkHttpClient okHttpClient(boolean isDebug, @Auth Interceptor authInterceptor,
+      @Log Interceptor loggingInterceptor) {
     OkHttpClient.Builder builder = new OkHttpClient.Builder()
         .addInterceptor(authInterceptor)
-        .connectTimeout(60, TimeUnit.SECONDS)
-        .readTimeout(60, TimeUnit.SECONDS)
-        .writeTimeout(60, TimeUnit.SECONDS);
+        .connectTimeout(10, TimeUnit.SECONDS)
+        .readTimeout(10, TimeUnit.SECONDS)
+        .writeTimeout(10, TimeUnit.SECONDS);
     if (isDebug) {
       builder.addInterceptor(loggingInterceptor);
     }
@@ -71,7 +76,7 @@ public abstract class NetworkModule {
 
   @Provides
   @Singleton
-  static Retrofit retrofit(OkHttpClient httpClient, Gson gson, @Named("baseUrl") String baseUrl) {
+  static Retrofit retrofit(OkHttpClient httpClient, Gson gson, @BaseUrl String baseUrl) {
     return new Retrofit.Builder()
         .baseUrl(baseUrl)
         .addConverterFactory(GsonConverterFactory.create(gson))

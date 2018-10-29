@@ -48,13 +48,7 @@ public class ImageSearchActivity extends DaggerAppCompatActivity {
     scrollListener.setCallback(() -> viewModel.loadNextPage());
     adapter.setRetryClickListener(__ -> viewModel.loadNextPage());
 
-    viewModel.loadProgress.observe(this, progress -> {
-      if (progress) {
-        progressBar.setVisibility(View.VISIBLE);
-      } else {
-        progressBar.setVisibility(View.GONE);
-      }
-    });
+    viewModel.loadProgress.observe(this, progress -> showProgress(progress, progressBar));
 
     viewModel.footerState.observe(this, adapter::setFooter);
     viewModel.images.observe(this, adapter::updateList);
@@ -77,7 +71,15 @@ public class ImageSearchActivity extends DaggerAppCompatActivity {
     });
   }
 
-  public void closeSoftKeyboard(View view) {
+  private void showProgress(boolean progress, ProgressBar progressBar) {
+      if (progress) {
+        progressBar.setVisibility(View.VISIBLE);
+      } else {
+        progressBar.setVisibility(View.GONE);
+      }
+  }
+
+  private void closeSoftKeyboard(View view) {
     InputMethodManager imm = (InputMethodManager) getSystemService(Activity.INPUT_METHOD_SERVICE);
     imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
   }
