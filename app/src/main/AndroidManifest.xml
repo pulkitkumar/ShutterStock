@@ -12,7 +12,7 @@
     android:name=".app.ShutterApplication"
     android:theme="@style/AppTheme">
 
-    <activity android:name=".ui.ImageSearchActivity">
+    <activity android:name=".ui.image.ImageSearchActivity">
       <intent-filter>
         <action android:name="android.intent.action.MAIN" />
         <category android:name="android.intent.category.LAUNCHER" />

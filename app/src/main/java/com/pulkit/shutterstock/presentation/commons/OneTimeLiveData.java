@@ -21,8 +21,8 @@ public class OneTimeLiveData<T> extends MutableLiveData<T> {
 
   @Override
   public void observe(@NonNull LifecycleOwner owner, @NonNull Observer<T> observer) {
+    super.observe(owner, observer);
     if (!isObserved.get()) {
-      super.observe(owner, observer);
       observer.onChanged(getValue());
       isObserved.set(true);
     }

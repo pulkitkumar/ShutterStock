@@ -29,6 +29,11 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
     }
+    sourceSets {
+        test {
+            resources.srcDirs += ['sampledata']
+        }
+    }
 }
 
 dependencies {

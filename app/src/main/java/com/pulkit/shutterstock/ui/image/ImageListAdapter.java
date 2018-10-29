@@ -1,6 +1,6 @@
-package com.pulkit.shutterstock.ui;
+package com.pulkit.shutterstock.ui.image;
 
-import static com.pulkit.shutterstock.presentation.Image.DIFF_CALLBACK;
+import static com.pulkit.shutterstock.presentation.image.entity.Image.DIFF_CALLBACK;
 
 import android.support.annotation.NonNull;
 import android.support.v7.recyclerview.extensions.AsyncDifferConfig;
@@ -17,7 +17,7 @@ import android.widget.Button;
 import android.widget.ImageView;
 import com.pulkit.shutterstock.R;
 import com.pulkit.shutterstock.app.PicassoCacheStrategyWrapper;
-import com.pulkit.shutterstock.presentation.Image;
+import com.pulkit.shutterstock.presentation.image.entity.Image;
 import com.pulkit.shutterstock.presentation.commons.FooterState;
 import com.squareup.picasso.MemoryPolicy;
 import com.squareup.picasso.Picasso;
@@ -51,7 +51,7 @@ public class ImageListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
 
   public ImageListAdapter(PicassoCacheStrategyWrapper cacheStrategy) {
     this.cacheStrategy = cacheStrategy;
-    footer = FooterState.NONE;
+    this.footer = FooterState.NONE;
     this.helper = new AsyncListDiffer(new AdapterListUpdateCallback(this),
         new AsyncDifferConfig
             .Builder(DIFF_CALLBACK)
@@ -63,6 +63,7 @@ public class ImageListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
   }
 
   public void updateList(List<Image> newList) {
+    System.out.println(">> "+ newList.size());
     if (newList.size() > 0) {
       helper.submitList(newList);
     } else {

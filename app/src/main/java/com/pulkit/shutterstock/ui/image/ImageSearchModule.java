@@ -1,4 +1,4 @@
-package com.pulkit.shutterstock.ui;
+package com.pulkit.shutterstock.ui.image;
 
 import android.arch.lifecycle.ViewModelProvider;
 import android.support.v7.widget.GridLayoutManager;
@@ -6,7 +6,9 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView.LayoutManager;
 import com.pulkit.shutterstock.app.PicassoCacheStrategyWrapper;
 import com.pulkit.shutterstock.app.di.scope.ActivityScope;
-import com.pulkit.shutterstock.presentation.ImageSearchViewModel;
+import com.pulkit.shutterstock.presentation.image.ImageSearchViewModel;
+import com.pulkit.shutterstock.ui.commons.LinearLayoutEndlessScrollListener;
+import com.pulkit.shutterstock.ui.commons.OnScrollListenerWithCallback;
 import dagger.Binds;
 import dagger.Module;
 import dagger.Provides;

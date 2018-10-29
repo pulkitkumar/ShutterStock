@@ -1,4 +1,4 @@
-package com.pulkit.shutterstock.ui;
+package com.pulkit.shutterstock.ui.image;
 
 import android.app.Activity;
 import android.arch.lifecycle.ViewModelProvider;
@@ -13,7 +13,8 @@ import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.ProgressBar;
 import com.pulkit.shutterstock.R;
-import com.pulkit.shutterstock.presentation.ImageSearchViewModel;
+import com.pulkit.shutterstock.presentation.image.ImageSearchViewModel;
+import com.pulkit.shutterstock.ui.commons.OnScrollListenerWithCallback;
 import dagger.android.support.DaggerAppCompatActivity;
 import javax.inject.Inject;
 

@@ -1,7 +1,7 @@
 package com.pulkit.shutterstock.di;
 
 import com.google.gson.Gson;
-import com.pulkit.shutterstock.presentation.commons.DataFetcher;
+import com.pulkit.shutterstock.presentation.commons.SampleDataReader;
 import com.pulkit.shutterstock.presentation.commons.SchedulerProvider;
 import com.pulkit.shutterstock.presentation.commons.TestSchedulerProvider;
 import dagger.Module;
@@ -19,7 +19,7 @@ public class UnitTestModule {
 
   @Provides
   @Singleton
-  DataFetcher testDataFetcher(Gson gson) {
-    return new DataFetcher(gson);
+  SampleDataReader testDataFetcher(Gson gson) {
+    return new SampleDataReader(gson);
   }
 }

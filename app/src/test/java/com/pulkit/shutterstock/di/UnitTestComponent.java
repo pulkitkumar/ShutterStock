@@ -2,6 +2,7 @@ package com.pulkit.shutterstock.di;
 
 import com.pulkit.shutterstock.data.NetworkModule;
 import com.pulkit.shutterstock.presentation.ImageSearchViewModelTest;
+import com.pulkit.shutterstock.presentation.ImageTest;
 import dagger.Component;
 import javax.inject.Singleton;
 
@@ -13,5 +14,7 @@ import javax.inject.Singleton;
 public interface UnitTestComponent {
 
   void inject(ImageSearchViewModelTest test);
+
+  void inject(ImageTest test);
 
 }

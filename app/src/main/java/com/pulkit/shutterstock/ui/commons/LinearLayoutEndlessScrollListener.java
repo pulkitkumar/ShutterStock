@@ -1,4 +1,4 @@
-package com.pulkit.shutterstock.ui;
+package com.pulkit.shutterstock.ui.commons;
 
 import android.support.annotation.NonNull;
 import android.support.v7.widget.LinearLayoutManager;

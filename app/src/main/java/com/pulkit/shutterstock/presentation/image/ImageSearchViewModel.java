@@ -1,4 +1,4 @@
-package com.pulkit.shutterstock.presentation;
+package com.pulkit.shutterstock.presentation.image;
 
 import android.arch.lifecycle.MutableLiveData;
 import android.arch.lifecycle.ViewModel;
@@ -11,6 +11,7 @@ import com.pulkit.shutterstock.domain.entity.ShutterPage;
 import com.pulkit.shutterstock.presentation.commons.FooterState;
 import com.pulkit.shutterstock.presentation.commons.OneTimeLiveData;
 import com.pulkit.shutterstock.presentation.commons.SchedulerProvider;
+import com.pulkit.shutterstock.presentation.image.entity.Image;
 import io.reactivex.Observable;
 import io.reactivex.Single;
 import io.reactivex.disposables.Disposable;
@@ -45,8 +46,6 @@ public class ImageSearchViewModel extends ViewModel {
   public ImageSearchViewModel(ShutterSearcher searcher, SchedulerProvider provider) {
     this.searcher = searcher;
     this.schedulerProvider = provider;
-    footerState.setValue(FooterState.NONE);
-    loadProgress.setValue(false);
     this.disposable = bindSearch();
   }
 

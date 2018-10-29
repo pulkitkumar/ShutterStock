@@ -1,4 +1,4 @@
-package com.pulkit.shutterstock.ui;
+package com.pulkit.shutterstock.ui.commons;
 
 import android.support.v7.widget.RecyclerView;
 
@@ -12,11 +12,11 @@ public abstract class OnScrollListenerWithCallback extends RecyclerView.OnScroll
     void onReachedBottom();
   }
 
-  ReachedBottomCallback callback;
+  protected ReachedBottomCallback callback;
 
   public void setCallback(ReachedBottomCallback callback) {
     this.callback = callback;
   }
 
-  abstract void reset();
+  public abstract void reset();
 }
