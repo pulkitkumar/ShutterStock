@@ -4,6 +4,9 @@ import com.pulkit.shutterstock.domain.entity.ShutterPage;
 import io.reactivex.Single;
 import javax.inject.Inject;
 
+/**
+ * Default implementation of searcher.
+ */
 public class ShutterSearcherImpl implements ShutterSearcher {
 
   private final ShutterRepository repository;
@@ -14,6 +17,7 @@ public class ShutterSearcherImpl implements ShutterSearcher {
   }
 
   public Single<ShutterPage> search(String query, int page, int perPage) {
-    return repository.search(query, page, perPage);
+    return repository.search(query, page, perPage)
+        .retry(2);
   }
 }

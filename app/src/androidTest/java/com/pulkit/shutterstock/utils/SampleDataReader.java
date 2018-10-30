@@ -1,4 +1,4 @@
-package com.pulkit.shutterstock.presentation.commons;
+package com.pulkit.shutterstock.utils;
 
 import com.google.gson.Gson;
 import com.pulkit.shutterstock.domain.entity.ShutterPage;
@@ -30,7 +30,19 @@ public class SampleDataReader {
     }
   }
 
-  public ShutterPage page1() throws IOException {
-    return gson.fromJson(readJsonFromFile("data_array_page_1.json"), ShutterPage.class);
+  public ShutterPage page1() {
+    try {
+      return gson.fromJson(readJsonFromFile("page1.json"), ShutterPage.class);
+    } catch (IOException e) {
+      return null;
+    }
+  }
+
+  public ShutterPage page2() {
+    try {
+      return gson.fromJson(readJsonFromFile("page2.json"), ShutterPage.class);
+    } catch (IOException e) {
+      return null;
+    }
   }
 }

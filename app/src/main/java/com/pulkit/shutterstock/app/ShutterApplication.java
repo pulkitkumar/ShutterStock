@@ -13,21 +13,18 @@ public class ShutterApplication extends DaggerApplication {
   private AppComponent appComponent = DaggerAppComponent.builder().app(this).build();
 
   @Inject
-  PicassoCacheStrategyWrapper appMemoryState;
-
-  @Override
-  public void onCreate() {
-    super.onCreate();
-  }
-
+  PicassoCacheStrategyWrapper imageCacheStrategy;
 
   @Override
   public void onTrimMemory(int level) {
     super.onTrimMemory(level);
+    // when memory is low, clear cache and set cache strategy to no cache.
+    // create a new piccaso singleton with no memory cache.
+
     if (level == TRIM_MEMORY_RUNNING_LOW ||
         level == TRIM_MEMORY_RUNNING_CRITICAL ||
         level == TRIM_MEMORY_COMPLETE) {
-      appMemoryState.setNoCacheStrategy();
+      imageCacheStrategy.setNoCacheStrategy();
       Picasso old = Picasso.get();
       Picasso.setSingletonInstance(new Picasso.Builder(this)
           .memoryCache(new LruCache(1))

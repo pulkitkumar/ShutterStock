@@ -1,4 +1,4 @@
-package com.pulkit.shutterstock.presentation;
+package com.pulkit.shutterstock.presentation.image;
 
 import static org.junit.Assert.assertEquals;
 import static org.mockito.Mockito.when;
@@ -8,7 +8,7 @@ import com.pulkit.shutterstock.di.DaggerUnitTestComponent;
 import com.pulkit.shutterstock.domain.ShutterSearcher;
 import com.pulkit.shutterstock.domain.entity.ShutterPage;
 import com.pulkit.shutterstock.presentation.commons.FooterState;
-import com.pulkit.shutterstock.presentation.commons.SampleDataReader;
+import com.pulkit.shutterstock.presentation.commons.SampleData;
 import com.pulkit.shutterstock.presentation.commons.SchedulerProvider;
 import com.pulkit.shutterstock.presentation.commons.TestObserver;
 import com.pulkit.shutterstock.presentation.image.ImageSearchViewModel;
@@ -26,6 +26,9 @@ import org.mockito.ArgumentMatchers;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 
+/**
+ * Unit tests for {@link ImageSearchViewModel}
+ */
 public class ImageSearchViewModelTest {
 
   @Rule
@@ -36,7 +39,7 @@ public class ImageSearchViewModelTest {
   @Inject
   SchedulerProvider schedulerProvider;
   @Inject
-  SampleDataReader sampleData;
+  SampleData sampleData;
 
   private ShutterPage page1;
 
@@ -66,7 +69,6 @@ public class ImageSearchViewModelTest {
 
     viewModel.search(UUID.randomUUID().toString());
 
-
     assertEquals(errorObserver.getObservedValues().size(), 0);
     assertEquals(imagesObserver.getLatest().size(), page1.getData().size());
     assertEquals(imagesObserver.getLatest().get(0), new Image(page1.getData().get(0)));
@@ -93,11 +95,11 @@ public class ImageSearchViewModelTest {
 
     viewModel.search(UUID.randomUUID().toString());
 
-
     assertEquals(errorObserver.getObservedValues().size(), 1);
     assertEquals(errorObserver.getLatest(), "message");
     assertEquals(imagesObserver.getLatest().size(), 0);
     assertEquals(progressObserver.getLatest(), false);
     assertEquals(footerStateObserver.getLatest(), FooterState.NONE);
   }
+
 }

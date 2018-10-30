@@ -47,14 +47,16 @@ public class ImageSearchViewModel extends ViewModel {
     this.searcher = searcher;
     this.schedulerProvider = provider;
     this.disposable = bindSearch();
+    images.setValue(Collections.emptyList());
+    hideProgress();
   }
 
   @MainThread
   public void search(String query) {
     this.query = query;
     pageNumber = INITIAL_PAGE_NUMBER;
-    uiImages.clear();
-    images.setValue(Collections.unmodifiableList(uiImages));
+    uiImages = new ArrayList<>();
+    images.setValue(Collections.emptyList());
     hideProgress();
     paginator.onNext(true);
   }
@@ -66,10 +68,12 @@ public class ImageSearchViewModel extends ViewModel {
 
   private Disposable bindSearch() {
     return paginator
+        .filter(__ -> (query != null && !EMPTY.equals(query)))
         .observeOn(schedulerProvider.getBgPool())
         .doOnNext(__ -> showProgress())
         .switchMapSingle(__ -> searcher.search(query, pageNumber, PAGE_SIZE)
             .onErrorReturn(e -> {
+              // handle error state here and return an empty list.
               errorMessage.postValue(e.getMessage());
               if (pageNumber > INITIAL_PAGE_NUMBER) {
                 footerState.postValue(FooterState.ERROR);

@@ -5,6 +5,9 @@ import android.support.annotation.Nullable;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Keeps a list of items the observer has observed.
+ */
 public class TestObserver<T> implements Observer<T> {
 
   private List<T> observedValues = new ArrayList<>();

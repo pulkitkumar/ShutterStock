@@ -30,6 +30,8 @@ public abstract class NetworkModule {
 
   // considering a max size of 5MB disk irrespective of device as the size is not too much.
   private static final long CACHE_SIZE = 5 * 1024 * 1024;
+  // considering a network request timeout of 10 seconds.
+  private static final int TIMEOUT_SECONDS = 10;
 
   @Provides
   @Singleton
@@ -65,9 +67,9 @@ public abstract class NetworkModule {
       @Log Interceptor loggingInterceptor) {
     OkHttpClient.Builder builder = new OkHttpClient.Builder()
         .addInterceptor(authInterceptor)
-        .connectTimeout(10, TimeUnit.SECONDS)
-        .readTimeout(10, TimeUnit.SECONDS)
-        .writeTimeout(10, TimeUnit.SECONDS);
+        .connectTimeout(TIMEOUT_SECONDS, TimeUnit.SECONDS)
+        .readTimeout(TIMEOUT_SECONDS, TimeUnit.SECONDS)
+        .writeTimeout(TIMEOUT_SECONDS, TimeUnit.SECONDS);
     if (isDebug) {
       builder.addInterceptor(loggingInterceptor);
     }

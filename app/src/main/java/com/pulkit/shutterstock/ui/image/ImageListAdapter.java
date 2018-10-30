@@ -17,8 +17,8 @@ import android.widget.Button;
 import android.widget.ImageView;
 import com.pulkit.shutterstock.R;
 import com.pulkit.shutterstock.app.PicassoCacheStrategyWrapper;
-import com.pulkit.shutterstock.presentation.image.entity.Image;
 import com.pulkit.shutterstock.presentation.commons.FooterState;
+import com.pulkit.shutterstock.presentation.image.entity.Image;
 import com.squareup.picasso.MemoryPolicy;
 import com.squareup.picasso.Picasso;
 import com.squareup.picasso.RequestCreator;
@@ -63,11 +63,10 @@ public class ImageListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
   }
 
   public void updateList(List<Image> newList) {
-    System.out.println(">> "+ newList.size());
-    if (newList.size() > 0) {
-      helper.submitList(newList);
-    } else {
+    if (newList.size() == 0) {
       helper.submitList(null);
+    } else {
+      helper.submitList(newList);
     }
   }
 

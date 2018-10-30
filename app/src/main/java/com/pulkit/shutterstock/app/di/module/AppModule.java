@@ -11,6 +11,10 @@ import dagger.Module;
 import dagger.Provides;
 import javax.inject.Singleton;
 
+/**
+ * This module has the responsibility of providing all config params to network module.
+ * Any decisions based on build flavour, build type should be provided from this module.
+ */
 @Module
 public abstract class AppModule {
 

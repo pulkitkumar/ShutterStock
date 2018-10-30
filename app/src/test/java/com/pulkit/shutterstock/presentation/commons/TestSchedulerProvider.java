@@ -3,6 +3,9 @@ package com.pulkit.shutterstock.presentation.commons;
 import io.reactivex.Scheduler;
 import io.reactivex.schedulers.Schedulers;
 
+/**
+ * Trampoline all Schedulers.
+ */
 public class TestSchedulerProvider implements SchedulerProvider {
 
   @Override

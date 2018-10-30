@@ -1,8 +1,8 @@
 package com.pulkit.shutterstock.di;
 
 import com.pulkit.shutterstock.data.NetworkModule;
-import com.pulkit.shutterstock.presentation.ImageSearchViewModelTest;
-import com.pulkit.shutterstock.presentation.ImageTest;
+import com.pulkit.shutterstock.presentation.image.ImageSearchViewModelTest;
+import com.pulkit.shutterstock.presentation.image.entity.ImageTest;
 import dagger.Component;
 import javax.inject.Singleton;
 

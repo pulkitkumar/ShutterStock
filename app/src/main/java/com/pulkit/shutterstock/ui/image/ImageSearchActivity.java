@@ -13,13 +13,17 @@ import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.ProgressBar;
 import com.pulkit.shutterstock.R;
+import com.pulkit.shutterstock.presentation.commons.SchedulerProvider;
 import com.pulkit.shutterstock.presentation.image.ImageSearchViewModel;
 import com.pulkit.shutterstock.ui.commons.OnScrollListenerWithCallback;
 import dagger.android.support.DaggerAppCompatActivity;
+import io.reactivex.processors.PublishProcessor;
+import java.util.concurrent.TimeUnit;
 import javax.inject.Inject;
 
 public class ImageSearchActivity extends DaggerAppCompatActivity {
 
+  public static final int DEBOUNCE_TIMEOUT = 300;
   @Inject
   ViewModelProvider.Factory factory;
   @Inject
@@ -28,8 +32,11 @@ public class ImageSearchActivity extends DaggerAppCompatActivity {
   LayoutManager layoutManager;
   @Inject
   OnScrollListenerWithCallback scrollListener;
+  @Inject
+  SchedulerProvider schedulerProvider;
 
   private ImageSearchViewModel viewModel;
+  private PublishProcessor<String> searchTermPublisher = PublishProcessor.create();
 
   @Override
   protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -67,9 +74,19 @@ public class ImageSearchActivity extends DaggerAppCompatActivity {
 
       @Override
       public boolean onQueryTextChange(String s) {
-        return false;
+        searchTermPublisher.onNext(s);
+        return true;
       }
     });
+
+    searchTermPublisher
+        .debounce(DEBOUNCE_TIMEOUT, TimeUnit.MILLISECONDS)
+        .distinctUntilChanged()
+        .observeOn(schedulerProvider.mainThread())
+        .subscribe(s -> {
+          scrollListener.reset();
+          viewModel.search(s);
+        });
   }
 
   private void showProgress(boolean progress, ProgressBar progressBar) {

@@ -1,21 +1,23 @@
-package com.pulkit.shutterstock.presentation;
+package com.pulkit.shutterstock.presentation.image.entity;
 
 import static org.junit.Assert.assertEquals;
 
 import com.pulkit.shutterstock.di.DaggerUnitTestComponent;
 import com.pulkit.shutterstock.domain.entity.ShutterData;
 import com.pulkit.shutterstock.domain.entity.ShutterPage;
-import com.pulkit.shutterstock.presentation.commons.SampleDataReader;
-import com.pulkit.shutterstock.presentation.image.entity.Image;
+import com.pulkit.shutterstock.presentation.commons.SampleData;
 import java.io.IOException;
 import javax.inject.Inject;
 import org.junit.Before;
 import org.junit.Test;
 
+/**
+ * Unit tests for {@link Image}
+ */
 public class ImageTest {
 
   @Inject
-  SampleDataReader dataReader;
+  SampleData dataReader;
 
   @Before
   public void setup() {

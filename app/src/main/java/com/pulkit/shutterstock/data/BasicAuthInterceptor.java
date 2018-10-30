@@ -10,7 +10,7 @@ import okhttp3.Request;
 import okhttp3.Response;
 
 /**
- * This class takes care of adding basic authorization header for the provided username and password in the constructor.
+ * This class takes care of adding basic authorization header to an Okhttp request, for the provided username and password.
  */
 public class BasicAuthInterceptor implements Interceptor {
 
