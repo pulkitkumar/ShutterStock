@@ -15,3 +15,7 @@
 `this package contains dependency injection and has the logic to provide the correct dependencies based on build flavour, build type, device size etc.`
    
 Packages are further subdivided based on features.
+
+## Features
+
+* This is a single screen application. It shows images from shutter stock library based on a search term. The next page of images is loaded as we reach the end of of the list. There is an option to retry if the next page load fails. 
