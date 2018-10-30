@@ -51,7 +51,7 @@ public class ImageSearchActivityTest {
   }
 
   @Test
-  public void test1() throws InterruptedException {
+  public void test_data_shown_on_successful_fetch() throws InterruptedException {
     when(searcher.search(ArgumentMatchers.anyString(), ArgumentMatchers.anyInt(), ArgumentMatchers.anyInt()))
         .thenReturn(Single.just(dataReader.page1()));
 
@@ -59,7 +59,7 @@ public class ImageSearchActivityTest {
 
     onView(withId(R.id.searchView)).perform(click());
     onView(withId(R.id.searchView)).perform(typeSearchViewText("test"));
-    Thread.sleep(ImageSearchActivity.DEBOUNCE_TIMEOUT); // wait for debounce
+    Thread.sleep(ImageSearchActivity.DEBOUNCE_TIMEOUT+ 100); // wait for debounce
 
     testScheduler.triggerActions();
 
