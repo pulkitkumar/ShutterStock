@@ -21,9 +21,10 @@ public class ShutterApplication extends DaggerApplication {
     // when memory is low, clear cache and set cache strategy to no cache.
     // create a new piccaso singleton with no memory cache.
 
-    if (level == TRIM_MEMORY_RUNNING_LOW ||
+    if ((level == TRIM_MEMORY_RUNNING_LOW ||
         level == TRIM_MEMORY_RUNNING_CRITICAL ||
-        level == TRIM_MEMORY_COMPLETE) {
+        level == TRIM_MEMORY_COMPLETE) &&
+        !imageCacheStrategy.isNoCacheStrategy()) {
       imageCacheStrategy.setNoCacheStrategy();
       Picasso old = Picasso.get();
       Picasso.setSingletonInstance(new Picasso.Builder(this)
